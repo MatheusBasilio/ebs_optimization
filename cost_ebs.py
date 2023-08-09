@@ -104,24 +104,24 @@ if __name__ == "__main__":
             total_cost_difference += cost_difference
             data_gp2.append({'VolumeId': volume['VolumeId'], 'Size (GiB)': volume['Size'], 'Cost GP2 ($)': gp2_cost, 'Cost GP3 ($)': gp3_cost, 'Cost Difference ($)': cost_difference})
 
-    # Adicionar linha com a soma total das diferenças de custo
+
     data_gp2.append({'VolumeId': 'Total', 'Size (GiB)': '', 'Cost GP2 ($)': '', 'Cost GP3 ($)': '', 'Cost Difference ($)': total_cost_difference})
 
     for volume in available_volumes:
         ebs_type = volume['VolumeType']
         cost_per_size = ebs_name_map.get(ebs_type, 0)
         cost = cost_per_size * volume['Size']
-        total_available_cost += cost  # Adicionar o custo ao total
+        total_available_cost += cost
         data_available.append({'VolumeId': volume['VolumeId'], 'Size (GiB)': volume['Size'], 'Type': ebs_type, 'Cost ($)': cost})
     
     data_available.append({'VolumeId': 'Total', 'Size (GiB)': '', 'Type': '', 'Cost ($)': total_available_cost})
     df_gp2 = pd.DataFrame(data_gp2)
     df_available = pd.DataFrame(data_available)
 
-    # Escrever para arquivo Excel
     with pd.ExcelWriter('ebs_volumes.xlsx') as writer:
         df_gp2.to_excel(writer, sheet_name='GP2 Volumes', index=False)
         df_available.to_excel(writer, sheet_name='Available Volumes', index=False)
+
 print(f"Total cost of available EBS volumes: ${total_available_cost:.2f}")
 print(f"Total cost difference (savings) by switching to gp3: ${total_cost_difference:.2f}")
 print("Excel file generated successfully.")
